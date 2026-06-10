@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold-50: #fdf8ef;
+  --color-gold-100: #f9edd8;
+  --color-gold-200: #f0d9a8;
+  --color-gold-300: #e5c078;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #c9a227;
+  --color-gold-600: #a8861f;
+  --color-gold-700: #876a19;
+
+  --color-beige-50: #faf7f2;
+  --color-beige-100: #f5efe6;
+  --color-beige-200: #ebe0d0;
+
+  --color-rose-gold-300: #e8b4b8;
+  --color-rose-gold-400: #d4a0a4;
+  --color-rose-gold-500: #c08a8e;
+
+  --font-serif: "Playfair Display", "Georgia", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Tajawal", sans-serif;
+  direction: rtl;
+  background-color: #faf7f2;
+  color: #374151;
+}
+
+.font-serif {
+  font-family: "Playfair Display", "Georgia", serif;
+}
+
+.gallery-swiper .swiper-pagination-bullet {
+  background: #d4af37;
+  opacity: 0.4;
+}
+
+.gallery-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: #c9a227;
+}
+
+.hero-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+.hero-frame {
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(212, 175, 55, 0.15);
+}
+
+.hero-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: rgba(212, 175, 55, 0.7);
+  border-style: solid;
+}
+
+.hero-corner-tl {
+  top: 12px;
+  right: 12px;
+  border-width: 2px 0 0 2px;
+}
+
+.hero-corner-tr {
+  top: 12px;
+  left: 12px;
+  border-width: 2px 2px 0 0;
+}
+
+.hero-corner-bl {
+  bottom: 12px;
+  right: 12px;
+  border-width: 0 0 2px 2px;
+}
+
+.hero-corner-br {
+  bottom: 12px;
+  left: 12px;
+  border-width: 0 2px 2px 0;
+}
