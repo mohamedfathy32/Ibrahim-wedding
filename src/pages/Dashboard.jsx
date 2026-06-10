@@ -1,12 +1,5 @@
-import { useEffect, useState } from 'react'
-import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  deleteDoc,
-  doc,
-} from 'firebase/firestore'
+import { useState } from 'react'
+import { deleteDoc, doc } from 'firebase/firestore'
 import { signOut } from 'firebase/auth'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -15,41 +8,18 @@ import {
   FaHeart,
   FaHome,
   FaComments,
+  FaQuoteRight,
 } from 'react-icons/fa'
+import { Link, useNavigate } from 'react-router-dom'
 import { auth, db } from '../firebase/firebaseConfig'
 import { weddingData } from '../data/weddingData'
-import { useNavigate } from 'react-router'
-
-function formatDate(timestamp) {
-  if (!timestamp) return '—'
-  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp)
-  return new Intl.DateTimeFormat('ar-EG', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date)
-}
+import { useWishes } from '../hooks/useWishes'
+import { formatWishDate } from '../utils/formatDate'
 
 export default function Dashboard() {
-  const [wishes, setWishes] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { wishes, loading } = useWishes()
   const [deletingId, setDeletingId] = useState(null)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    const q = query(collection(db, 'wishes'), orderBy('createdAt', 'desc'))
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-      }))
-      setWishes(data)
-      setLoading(false)
-    })
-    return unsubscribe
-  }, [])
 
   const handleDelete = async (id) => {
     if (!window.confirm('هل أنت متأكد من حذف هذه التهنئة؟')) return
@@ -84,13 +54,13 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-gray-600 transition-colors hover:bg-gold-50 hover:text-gold-700"
             >
               <FaHome />
               <span className="hidden sm:inline">الرئيسية</span>
-            </a>
+            </Link>
             <button
               type="button"
               onClick={handleLogout}
@@ -107,7 +77,7 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 grid gap-4 sm:grid-cols-2"
+          className="mb-8"
         >
           <div className="rounded-2xl border border-gold-100 bg-white p-6 shadow-md">
             <div className="flex items-center gap-4">
@@ -121,6 +91,9 @@ export default function Dashboard() {
                 </p>
               </div>
             </div>
+            <p className="mt-4 text-sm text-gray-400">
+              الحذف متاح هنا فقط — الزوار يرون التهاني بدون إمكانية حذفها
+            </p>
           </div>
         </motion.div>
 
@@ -145,24 +118,33 @@ export default function Dashboard() {
                   transition={{ delay: index * 0.05 }}
                   className="rounded-2xl border border-gold-100 bg-white p-6 shadow-md"
                 >
-                  <div className="mb-4 flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-gray-800">{wish.name}</h3>
-                      <p className="text-xs text-gray-400">
-                        {formatDate(wish.createdAt)}
-                      </p>
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-100 font-semibold text-gold-700">
+                        {wish.name?.trim()?.charAt(0) || '?'}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-800">{wish.name}</h3>
+                        <p className="text-xs text-gray-400">
+                          {formatWishDate(wish.createdAt) || '—'}
+                        </p>
+                      </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => handleDelete(wish.id)}
                       disabled={deletingId === wish.id}
-                      className="rounded-lg p-2 text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
-                      aria-label="حذف"
+                      className="flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-500 transition-colors hover:bg-red-100 hover:text-red-700 disabled:opacity-50"
+                      aria-label="حذف التهنئة"
                     >
                       <FaTrash />
+                      <span className="hidden sm:inline">حذف</span>
                     </button>
                   </div>
-                  <p className="leading-relaxed text-gray-600">{wish.message}</p>
+                  <div className="flex gap-2">
+                    <FaQuoteRight className="mt-1 shrink-0 text-gold-200" />
+                    <p className="leading-relaxed text-gray-600">{wish.message}</p>
+                  </div>
                 </motion.div>
               ))}
             </AnimatePresence>

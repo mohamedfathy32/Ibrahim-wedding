@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { FaPaperPlane, FaCheckCircle } from 'react-icons/fa'
 import { db } from '../firebase/firebaseConfig'
+import WishesDisplay from './WishesDisplay'
 
 export default function WishesSection() {
   const [name, setName] = useState('')
@@ -31,8 +32,7 @@ export default function WishesSection() {
       setName('')
       setMessage('')
       setTimeout(() => setSuccess(false), 4000)
-    } catch(error) {
-      console.log(error)
+    } catch {
       setError('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.')
     } finally {
       setLoading(false)
@@ -41,7 +41,7 @@ export default function WishesSection() {
 
   return (
     <section id="wishes" className="bg-beige-50 py-20 md:py-28">
-      <div className="mx-auto max-w-2xl px-6">
+      <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -66,7 +66,7 @@ export default function WishesSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-gold-100 bg-white p-8 shadow-lg"
+          className="mx-auto max-w-2xl rounded-2xl border border-gold-100 bg-white p-8 shadow-lg"
         >
           <div className="mb-6">
             <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
@@ -119,12 +119,14 @@ export default function WishesSection() {
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-rose-gold-500 py-3 font-medium text-white shadow-md transition-opacity disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-gold-500 to-rose-gold-500 py-3 font-medium text-white shadow-md transition-opacity disabled:opacity-60"
           >
             <FaPaperPlane />
             {loading ? 'جاري الإرسال...' : 'إرسال التهنئة'}
           </motion.button>
         </motion.form>
+
+        <WishesDisplay />
       </div>
     </section>
   )
